@@ -1,3 +1,5 @@
+document.write('<script src="https:\/\/js.balancedpayments.com\/1.1\/balanced.js"><\/script>');
+
 QUnit.testStart(function(test) {
 	var module = test.module ? test.module : '';
 	console.log('#' + module + " " + test.name + ": starting setup.");
