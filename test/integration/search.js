@@ -1,21 +1,7 @@
-var marketplaceRoute;
-
 module('Search', {
 	setup: function() {
-		Balanced.TEST.setupMarketplace();
-		var i = 4;
-		Ember.run(function() {
-			while (i > 0) {
-				Balanced.Debit.create({
-					uri: '/v1/customers/' + Balanced.TEST.CUSTOMER_ID + '/debits',
-					appears_on_statement_as: 'Pixie Dust',
-					amount: 10000,
-					description: 'Cocaine'
-				}).save();
-				i--;
-			}
-		});
-		marketplaceRoute = '/marketplaces/' + Balanced.TEST.MARKETPLACE_ID;
+		Testing.setupMarketplace();
+		Testing.createDebits();
 		Balanced.Auth.set('signedIn', true);
 
 		// add some delay, because the API takes some time to add things to search
@@ -31,14 +17,14 @@ module('Search', {
 });
 
 test('search box exists', function(assert) {
-	visit(marketplaceRoute)
+	visit(Testing.MARKETPLACE_ROUTE)
 		.then(function() {
 			assert.equal($('#q').length, 1);
 		});
 });
 
 test('search results show and hide', function(assert) {
-	visit(marketplaceRoute)
+	visit(Testing.MARKETPLACE_ROUTE)
 		.then(function() {
 			Testing.runSearch('Cocaine');
 		})
@@ -56,7 +42,7 @@ test('search results show and hide', function(assert) {
 });
 
 test('search results hide on click [x]', function(assert) {
-	visit(marketplaceRoute)
+	visit(Testing.MARKETPLACE_ROUTE)
 		.then(function() {
 			Testing.runSearch('%');
 		})
@@ -70,7 +56,7 @@ test('search results hide on click [x]', function(assert) {
 });
 
 test('search "%" returns 4 transactions total, showing 2 transactions in results, with load more', function(assert) {
-	visit(marketplaceRoute)
+	visit(Testing.MARKETPLACE_ROUTE)
 		.then(function() {
 			Testing.runSearch('%');
 		})
@@ -82,7 +68,7 @@ test('search "%" returns 4 transactions total, showing 2 transactions in results
 });
 
 test('search "%", click accounts, returns 1 accounts total, showing 1 account in results, with no load more', function(assert) {
-	visit(marketplaceRoute)
+	visit(Testing.MARKETPLACE_ROUTE)
 		.then(function() {
 			Testing.runSearch('%');
 		})
@@ -95,7 +81,7 @@ test('search "%", click accounts, returns 1 accounts total, showing 1 account in
 });
 
 test('search "%" returns 4 transactions. Click load more shows 2 more and hides load more', function(assert) {
-	visit(marketplaceRoute)
+	visit(Testing.MARKETPLACE_ROUTE)
 		.then(function() {
 			Testing.runSearch('%');
 		})
@@ -112,7 +98,7 @@ test('search "%" returns 4 transactions. Click load more shows 2 more and hides 
 // can't create a hold at the moment
 /*
 test('search "%" click filter by holds.', function(assert) {
-	visit(marketplaceRoute)
+	visit(Testing.MARKETPLACE_ROUTE)
 		.then(function() {
 			Testing.runSearch('%');
 		})
@@ -129,7 +115,7 @@ test('search "%" click filter by holds.', function(assert) {
 */
 
 test('search date picker dropdown', function(assert) {
-	visit(marketplaceRoute).then(function() {
+	visit(Testing.MARKETPLACE_ROUTE).then(function() {
 		Testing.runSearch('%');
 
 		var toggle = $('#search .timing .dropdown-toggle');
@@ -144,7 +130,7 @@ test('search date picker dropdown', function(assert) {
 });
 
 test('search click result', function(assert) {
-	visit(marketplaceRoute).then(function() {
+	visit(Testing.MARKETPLACE_ROUTE).then(function() {
 		Testing.runSearch('%');
 
 		// click customer section button
@@ -158,7 +144,7 @@ test('search click result', function(assert) {
 });
 
 test('search and click go with empty date range', function(assert) {
-	visit(marketplaceRoute).then(function() {
+	visit(Testing.MARKETPLACE_ROUTE).then(function() {
 		Testing.runSearch('%');
 
 		// click the date picker dropdown
@@ -171,7 +157,7 @@ test('search and click go with empty date range', function(assert) {
 });
 
 test('search date range pick', function(assert) {
-	visit(marketplaceRoute).then(function() {
+	visit(Testing.MARKETPLACE_ROUTE).then(function() {
 		Testing.runSearch('%');
 
 		var spy = sinon.spy(Balanced.Adapter, 'get');
@@ -195,7 +181,7 @@ test('search date range pick', function(assert) {
 		var end = new Date(2013, 7, 2);
 		var end_iso = encodeURIComponent(end.toISOString());
 
-		var expected_uri = '/marketplaces/' + Balanced.TEST.MARKETPLACE_ID + '/search?' +
+		var expected_uri = '/marketplaces/' + Testing.MARKETPLACE_ID + '/search?' +
 			'created_at%5B%3C%5D=' + end_iso + '&' +
 			'created_at%5B%3E%5D=' + begin_iso + '&' +
 			'limit=2&offset=0&q=&type%5Bin%5D=debit%2Ccredit%2Ccard_hold%2Crefund';
@@ -207,7 +193,7 @@ test('search date range pick', function(assert) {
 });
 
 test('search date sort has three states', function(assert) {
-	visit(marketplaceRoute).then(function() {
+	visit(Testing.MARKETPLACE_ROUTE).then(function() {
 		Testing.runSearch('%');
 
 		var objectPath = "#search .results th.date";

@@ -1,12 +1,10 @@
-var initialDepositRoute;
 /*
  * TODO: Some of these tests are not working because the balanced.js library
  * does not appear to be loaded correctly and form validation therefore fails.
  */
 module('Balanced.Marketplaces.initial_deposit', {
 	setup: function() {
-		Balanced.TEST.setupMarketplace();
-		initialDepositRoute = '/marketplaces/' + Balanced.TEST.MARKETPLACE_ID + '/initial_deposit';
+		Testing.setupMarketplace();
 	},
 	teardown: function() {
 
@@ -35,13 +33,13 @@ function populateData(data) {
 }
 
 test('on the correct page', function(assert) {
-	visit(initialDepositRoute).then(function() {
+	visit(Testing.INITIAL_DEPOSIT_ROUTE).then(function() {
 		assert.equal($('h1', '#marketplace-initial-deposit').text(), 'Make an initial deposit', 'title is correct');
 	});
 });
 
 test('form validation', function(assert) {
-	visit(initialDepositRoute).then(function() {
+	visit(Testing.INITIAL_DEPOSIT_ROUTE).then(function() {
 		var $submitButton = $('button:contains("Submit")');
 		assert.equal($submitButton.length, 1, 'submit button exists');
 	});
@@ -51,7 +49,7 @@ test('form validation', function(assert) {
 });
 
 test('payment success', function(assert) {
-	visit(initialDepositRoute).then(function() {
+	visit(Testing.INITIAL_DEPOSIT_ROUTE).then(function() {
 		populateData(goodData);
 		var $submitButton = $('button:contains("Submit")');
 		assert.equal($submitButton.length, 1, 'submit button exists');
@@ -72,7 +70,7 @@ test('payment success', function(assert) {
 //});
 
 test('cancel', function(assert) {
-	visit(initialDepositRoute).then(function() {
+	visit(Testing.INITIAL_DEPOSIT_ROUTE).then(function() {
 		var $skipButton = $('button:contains("Skip")');
 		var hash = window.location.hash;
 		assert.equal($skipButton.length, 1, 'skip button exists');
