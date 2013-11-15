@@ -297,6 +297,7 @@ module.exports = function(grunt) {
 			}
 		},
 
+
 		/*jshint multistr: true */
 		'compile-handlebars': {
 			dev: {
@@ -317,7 +318,8 @@ module.exports = function(grunt) {
 							MIXPANEL: '',\
 							GOOGLE_ANALYTICS: ''\
 						}\
-					}"
+					}",
+					ext: grunt.file.exists('./ext.json') ? grunt.file.read('./ext.json') : ''
 				},
 				output: 'build/dev.html'
 			},
